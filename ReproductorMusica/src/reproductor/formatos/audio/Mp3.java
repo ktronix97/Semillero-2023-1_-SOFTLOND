@@ -12,6 +12,9 @@ public class Mp3 extends Audio{
 		super(duracion, tamano, artista, composicion, generoMusical);
 	}
 
+	/***
+	 * Método que reproduce audio mp3 en el reproductor de música.
+	 */
 	@Override
 	public void reproducir() {
 		System.out.println( "Reproduciendo mp3");

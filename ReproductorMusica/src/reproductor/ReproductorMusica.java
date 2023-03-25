@@ -8,6 +8,10 @@ package reproductor;
  */
 public interface ReproductorMusica {
 	
+	/***
+	 * método que reproduce varios tipos de formatos de audio y vídeo.
+	 */
+	
 	public void reproducir();
 	
 }
