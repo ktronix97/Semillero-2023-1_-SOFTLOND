@@ -1,6 +1,13 @@
 package cuenta;
 import excepciones.*;
 
+/***
+ * Clase de tipo cuenta bancaria llamada CuentaAhorro que da diferentes tipos de descuento 
+ * y límites a los usuarios que una cuenta corriente.
+ * @author dalia
+ * @version 1.0
+ */
+
 
 class CuentaAhorro extends CuentaBancaria {
     private static final double PORCENTAJE_DESCUENTO = 0.01;
