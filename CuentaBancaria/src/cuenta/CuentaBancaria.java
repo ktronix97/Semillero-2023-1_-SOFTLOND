@@ -26,11 +26,11 @@ public abstract class CuentaBancaria {
     /***
      * Método para depositar dinero en la cuenta.
      * @param monto cantidad a depositar.
-     * @throws MontoNegativoException si la cantidad de dinero ingresada es negativa.
+     * @throws MontoInvalidoException si la cantidad de dinero ingresada es negativa.
      */
-    public void depositar(double monto) throws MontoNegativoException {
+    public void depositar(double monto) throws MontoInvalidoException {
         if (monto <= 0.0) {
-            throw new MontoNegativoException("No deposita un valor correcto, repita la operación");
+            throw new MontoInvalidoException("No deposita un valor correcto, repita la operación");
         }
         numDepositos ++;
         saldo += monto;
@@ -42,9 +42,9 @@ public abstract class CuentaBancaria {
      * @param monto
      * @throws MaximoRetirosException
      * @throws SaldoInsuficienteException
-     * @throws MontoNegativoException
+     * @throws MontoInvalidoException
      */
-    public abstract void retirar(double monto) throws MaximoRetirosException, SaldoInsuficienteException, MontoNegativoException;
+    public abstract void retirar(double monto) throws MaximoRetirosException, SaldoInsuficienteException, MontoInvalidoException;
 
     /***
      * Método para realizar operaciones comunes de todas las cuentas al retirar

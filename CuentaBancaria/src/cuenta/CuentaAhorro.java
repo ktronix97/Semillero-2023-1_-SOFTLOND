@@ -9,7 +9,7 @@ import excepciones.*;
  */
 
 
-class CuentaAhorro extends CuentaBancaria {
+public class CuentaAhorro extends CuentaBancaria {
     private static final double PORCENTAJE_DESCUENTO = 0.01;
     private static final int NUMERO_MAXIMO_RETIROS = 3;
     private static final int NUMERO_PRIMEROS_DEPOSITOS = 2;
@@ -20,8 +20,16 @@ class CuentaAhorro extends CuentaBancaria {
         this.numDepositos = 0;
     }
     
+    /***
+     * Método que recibe un monto para retirar dinero de la cuenta, con el límite de 3 retiros al día, 
+     * porcentaje de descuento del 0.01%. para cada usuario.
+     * @SaldoInsuficienteException se lanza si intenta retirar más del saldo que tiene en la cuenta.
+     * @MaximoRetirosException se lanza si sobrepasa el límite de retiros permitido.
+     * @MontoNegativoException si el monto de dinero ingresado es negativo.
+     */
+    
     @Override
-    public void retirar(double monto) throws SaldoInsuficienteException, MaximoRetirosException, MontoNegativoException {
+    public void retirar(double monto) throws SaldoInsuficienteException, MaximoRetirosException, MontoInvalidoException {
         if (getNumRetiros() >= NUMERO_MAXIMO_RETIROS) {
             monto += monto * PORCENTAJE_DESCUENTO;
         }
@@ -32,8 +40,13 @@ class CuentaAhorro extends CuentaBancaria {
         super.depositar(monto);
     }
     
+    /***
+     * Método que recibe un monto para agregar al saldo actual de la cuenta
+     * aplicando saldo adicional del 0.05% en los primero dos depositos
+     */
+    
     @Override
-    public void depositar(double monto) throws MontoNegativoException {
+    public void depositar(double monto) throws MontoInvalidoException {
         if (numDepositos < NUMERO_PRIMEROS_DEPOSITOS) {
             super.depositar(monto + (monto * 0.005));
         } else {

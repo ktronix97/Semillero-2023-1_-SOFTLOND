@@ -7,9 +7,10 @@ package excepciones;
  * @version 1.0
  */
 
-public class MontoNegativoException extends Exception {
+public class MontoInvalidoException extends Exception {
 	
-	public MontoNegativoException(String mensaje) {
+	// Llama al constructor de Excepcion.
+	public MontoInvalidoException(String mensaje) {
 		super(mensaje);
 	}
 }

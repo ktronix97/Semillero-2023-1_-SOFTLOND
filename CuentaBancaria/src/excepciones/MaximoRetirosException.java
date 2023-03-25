@@ -8,6 +8,7 @@ package excepciones;
  */
 
 public class MaximoRetirosException extends Exception {
+	
 	// Llama al constructor de Excepcion.
 	public MaximoRetirosException(String mensaje) {
 		super(mensaje);

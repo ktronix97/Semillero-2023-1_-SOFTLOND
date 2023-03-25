@@ -27,17 +27,17 @@ public class CuentaCorriente extends CuentaBancaria {
     /***
      * Realiza retiro de dinero de la cuenta corriente, válidando que no exceda 
      * el número de retiros máximo para la cuenta y lanzando las siguientes excepciones si hay errores.
-     * SaldoInsuficienteException se lanza si intenta retirar más del saldo que tiene en la cuenta.
-     * MaximoRetirosException se lanza si sobrepasa el límite de retiros permitido.
-     * MontoNegativoException si el monto de dinero ingresado es negativo.
+     * @SaldoInsuficienteException se lanza si intenta retirar más del saldo que tiene en la cuenta.
+     * @MaximoRetirosException se lanza si sobrepasa el límite de retiros permitido.
+     * @MontoNegativoException si el monto de dinero ingresado es negativo.
      */
     @Override
-    public void retirar(double monto) throws SaldoInsuficienteException, MaximoRetirosException, MontoNegativoException {
+    public void retirar(double monto) throws SaldoInsuficienteException, MaximoRetirosException, MontoInvalidoException {
         if (numRetiros >= MAX_RETIROS) {
             throw new MaximoRetirosException("se ha excedido el máximo de retiros disponibles");
         }
         if (monto <= 0.0) {
-            throw new MontoNegativoException("Valor incorrecto, vuelva a realizar la operación");
+            throw new MontoInvalidoException("Valor incorrecto, vuelva a realizar la operación");
        
         }        
         realizarRetiro(monto);
