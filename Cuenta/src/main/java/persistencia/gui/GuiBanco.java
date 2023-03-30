@@ -8,12 +8,13 @@ import persistencia.entidades.CuentaBancaria.TipoCuenta;
 import persistencia.repositorios.RepositorioCuenta;
 import persistencia.servicios.*;
 
-public class GuiBanco<T>{
+public class GuiBanco<T> {
+
     private boolean running = true;
     private ServicioCuenta serviciosbanco;
 
     public GuiBanco() {
-        serviciosbanco = new ServicioCuenta(null);
+        serviciosbanco = new ServicioCuenta();
     }
 
     public void iniciar() throws Exception {
@@ -48,14 +49,17 @@ public class GuiBanco<T>{
                 break;
             case 4:
                 realizarDeposito();
-            break;
+                break;
             case 5:
                 realizarTranferencia();
-            break;
+                break;
             case 6:
                 realizarRetiro();
-            break;
+                break;
             case 7:
+                System.out.println("No funciona aun");
+                break;
+            case 8:
                 salir();
                 break;
             default:
@@ -65,25 +69,41 @@ public class GuiBanco<T>{
     }
 
     private void realizarTranferencia() {
-		// TODO Auto-generated method stub
-		
-	}
+        // TODO Auto-generated method stub
 
-	private void crearPersona() {
+    }
+
+    private void crearPersona() {
         System.out.println("Crear banco");
         Scanner scanner = new Scanner(System.in);
         System.out.println("numerocuenta: ");
-        String numerocuenta = scanner.nextLine();   
+        String numerocuenta = scanner.nextLine();
         System.out.println("saldo: ");
         int saldo = scanner.nextInt();
         scanner.nextLine();
         System.out.println("propietario: ");
         String propietario = scanner.nextLine();
         System.out.println("tipo de cuenta: ");
+        System.out.println("1 para cuenta de Ahorro, 2 para cuenta corriente");
         String tipo = scanner.nextLine();
-
-        CuentaBancaria cuenta = new CuentaAhorro(numerocuenta,saldo,propietario,tipo);
+        
+        if(tipo.equals("1")){
+        CuentaBancaria cuenta = new CuentaAhorro(numerocuenta, saldo, propietario);
         serviciosbanco.saveCuenta(cuenta);
+        
+        }
+        else if(tipo.equals("2")){
+        CuentaBancaria cuenta = new CuentaCorriente(numerocuenta, saldo, propietario);
+        serviciosbanco.saveCuenta(cuenta);
+        }
+        else{
+            System.out.println("Selecciono incorrectamente");
+        }
+        
+        
+        
+
+
 
     }
 
@@ -91,7 +111,7 @@ public class GuiBanco<T>{
         System.out.println("Listando cuentas");
         List<CuentaBancaria> cuentas = serviciosbanco.getCuentas();
 
-        for ( CuentaBancaria cuenta : cuentas) {
+        for (CuentaBancaria cuenta : cuentas) {
             System.out.println(cuenta.getNumeroCuenta());
             System.out.println(cuenta.getSaldo());
         }
@@ -110,8 +130,7 @@ public class GuiBanco<T>{
         }
     }
 
-
-    public  void realizarDeposito() throws Exception {
+    public void realizarDeposito() throws Exception {
         System.out.println("\n------ Realizar Depósito ------");
         System.out.print("Ingrese el número de cuenta: ");
         Scanner scanner = new Scanner(System.in);
@@ -133,8 +152,7 @@ public class GuiBanco<T>{
         System.out.println("Nuevo saldo: " + cuenta.getSaldo());
     }
 
-
-    public  void realizarRetiro() throws Exception {
+    public void realizarRetiro() throws Exception {
         System.out.println("--realizar deposito------: ");
         System.out.print("Ingrese el número de cuenta: ");
         Scanner scanner = new Scanner(System.in);
@@ -151,10 +169,11 @@ public class GuiBanco<T>{
         cuenta.retirar(monto);
         System.out.println("Se ha retirado $" + monto + " de la cuenta " + numerodecuenta);
         System.out.println("El saldo actual de la cuenta es $" + cuenta.getSaldo());
-        
+
     }
+
     private void salir() {
         System.out.println("Salir");
-        running = false;
+        this.running = false;
     }
 }

@@ -18,6 +18,7 @@ public class CuentaAhorro extends CuentaBancaria {
     public CuentaAhorro(String numeroCuenta, double saldo, String propietario) {
         super(numeroCuenta,saldo, propietario);
         this.numDepositos = 0;
+        this.setTipo(TipoCuenta.AHORRO);
     }
     
     public CuentaAhorro(String numerocuenta, int saldo, String propietario, String tipo) {

@@ -1,34 +1,50 @@
 package persistencia.entidades;
+
 import persistencia.excepciones.*;
 
-/***
- * Clase de tipo de cuenta bancaria llamada CuentaCorriente aplica un máximo de 5 retiros al cliente, 
- * además de un porcentaje de 0.005% de deposito.
+/**
+ * *
+ * Clase de tipo de cuenta bancaria llamada CuentaCorriente aplica un máximo de
+ * 5 retiros al cliente, además de un porcentaje de 0.005% de deposito.
+ *
  * @author dalia
  *
  */
 public class CuentaCorriente extends CuentaBancaria {
-	
+
+    public enum TipoCuenta {
+        AHORRO,
+        CORRIENTE,
+        OTRA
+    }
+
     private static final int MAX_RETIROS = 5;
     private static final double PORCENTAJE_DEPOSITO = 0.005;
     private int numDepositos;
 
-    /***
+    /**
+     * *
      *
      * @param numeroCuenta
      * @param saldo
      * @param propietario
      */
     public CuentaCorriente(String numeroCuenta, double saldo, String propietario) {
-        super(numeroCuenta,saldo, propietario);
+        super(numeroCuenta, saldo, propietario);
         this.numDepositos = 0;
+        this.setTipo(CuentaBancaria.TipoCuenta.CORRIENTE);
     }
 
-    /***
-     * Realiza retiro de dinero de la cuenta corriente, válidando que no exceda 
-     * el número de retiros máximo para la cuenta y lanzando las siguientes excepciones si hay errores.
-     * @SaldoInsuficienteException se lanza si intenta retirar más del saldo que tiene en la cuenta.
-     * @MaximoRetirosException se lanza si sobrepasa el límite de retiros permitido.
+    /**
+     * *
+     * Realiza retiro de dinero de la cuenta corriente, válidando que no exceda
+     * el número de retiros máximo para la cuenta y lanzando las siguientes
+     * excepciones si hay errores.
+     *
+     * @SaldoInsuficienteException se lanza si intenta retirar más del saldo que
+     * tiene en la cuenta.
+     * @MaximoRetirosException se lanza si sobrepasa el límite de retiros
+     * permitido.
      * @MontoNegativoException si el monto de dinero ingresado es negativo.
      */
     @Override
@@ -38,8 +54,8 @@ public class CuentaCorriente extends CuentaBancaria {
         }
         if (monto <= 0.0) {
             throw new MontoInvalidoException("Valor incorrecto, vuelva a realizar la operación");
-       
-        }        
+
+        }
         realizarRetiro(monto);
 
     }
@@ -48,11 +64,8 @@ public class CuentaCorriente extends CuentaBancaria {
         this.numRetiros = numRetiros;
     }
 
-    
     public void setNumDepositos(int numDepositos) {
         this.numDepositos = numDepositos;
     }
-    
 
-    
 }
