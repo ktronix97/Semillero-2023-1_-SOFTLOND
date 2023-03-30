@@ -1,5 +1,5 @@
-package cuenta;
-import excepciones.*;
+package persistencia.entidades;
+import persistencia.excepciones.*;
 
 /***
  * Clase de tipo de cuenta bancaria llamada CuentaCorriente aplica un máximo de 5 retiros al cliente, 

@@ -3,18 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package persistencia;
+package persistencia.repositorios;
 
+import org.sqlite.JDBC;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import persistencia.excepciones.*;
+
+import persistencia.entidades.*;
 
 /**
  *
- * @author Juan
+ * @author Dalia
  */
 public class RepositorioCuenta {
 
@@ -22,8 +27,8 @@ public class RepositorioCuenta {
 
     public RepositorioCuenta() {
         try {
-            DriverManager.registerDriver(new org.sqlite.JDBC());
-            this.baseDatos = "jdbc:sqlite:cuentas";
+        	this.baseDatos = "jdbc:sqlite:cuentas";
+            DriverManager.registerDriver(new JDBC());
             this.conexion();
         } catch (SQLException e) {
             e.printStackTrace(System.out);
@@ -36,8 +41,6 @@ public class RepositorioCuenta {
             connection = DriverManager.getConnection(this.baseDatos);
             if (connection != null) {
                 DatabaseMetaData meta = connection.getMetaData();
-                //System.out.println("Database connected: " + meta.getDatabaseProductName());
-                //System.out.println("The driver name is " + meta.getDriverName());
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -98,8 +101,36 @@ public class RepositorioCuenta {
                         + "numDepositos INTEGER NOT NULL)");
    }
     
+    
+   public CuentaBancaria selectById(int id) throws SQLException, CuentaInexistente {
+	   CuentaAhorro cuenta = null;
+		Connection connection = null;
+		String sql = "SELECT * FROM cuentas WHERE id = ?";
+		try {
+			connection = DriverManager.getConnection(super.toString());
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			pstmt.setDouble(1, id);
 
-
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				cuenta = new CuentaAhorro(
+					rs.getString("numero"),
+					rs.getInt("saldo"),
+					rs.getString("propietario")
+				);
+				cuenta.setNumRetiros(rs.getInt("retiros"));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}finally{
+			connection.close();
+		}
+		if(cuenta == null) {
+			throw new CuentaInexistente("La cuenta no existe");
+		}else{
+			return cuenta;
+		}
+   }
 
 
 }

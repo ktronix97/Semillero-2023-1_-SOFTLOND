@@ -1,4 +1,4 @@
-package excepciones;
+package persistencia.excepciones;
 
 /*** 
  * MontoNegativoException es una excepcion que hereda de Exception que se muestra al cliente 

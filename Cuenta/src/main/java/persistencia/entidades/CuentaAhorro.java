@@ -1,5 +1,5 @@
-package cuenta;
-import excepciones.*;
+package persistencia.entidades;
+import persistencia.excepciones.*;
 
 /***
  * Clase de tipo cuenta bancaria llamada CuentaAhorro que da diferentes tipos de descuento 
@@ -20,7 +20,11 @@ public class CuentaAhorro extends CuentaBancaria {
         this.numDepositos = 0;
     }
     
-    /***
+    public CuentaAhorro(String numerocuenta, int saldo, String propietario, String tipo) {
+		super(numerocuenta, saldo, propietario, tipo);
+	}
+
+	/***
      * Método que recibe un monto para retirar dinero de la cuenta, con el límite de 3 retiros al día, 
      * porcentaje de descuento del 0.01%. para cada usuario.
      * @SaldoInsuficienteException se lanza si intenta retirar más del saldo que tiene en la cuenta.
