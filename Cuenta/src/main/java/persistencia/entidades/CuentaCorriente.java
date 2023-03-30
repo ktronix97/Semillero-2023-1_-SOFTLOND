@@ -60,12 +60,6 @@ public class CuentaCorriente extends CuentaBancaria {
 
     }
 
-    public void setNumRetiros(int numRetiros) {
-        this.numRetiros = numRetiros;
-    }
 
-    public void setNumDepositos(int numDepositos) {
-        this.numDepositos = numDepositos;
-    }
 
 }

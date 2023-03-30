@@ -1,20 +1,33 @@
 package persistencia.gui;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import persistencia.entidades.*;
 import persistencia.entidades.CuentaBancaria.TipoCuenta;
+import persistencia.excepciones.CuentaInexistente;
+import persistencia.excepciones.MaximoRetirosException;
+import persistencia.excepciones.MontoInvalidoException;
+import persistencia.excepciones.SaldoInsuficienteException;
 import persistencia.repositorios.RepositorioCuenta;
 import persistencia.servicios.*;
+
+/***
+ * Menú del cliente para realizar las transacciones correspondientes a su Cuenta Bancaria.
+ * @author dalia
+ * @param <T> 
+ */
 
 public class GuiBanco<T> {
 
     private boolean running = true;
-    private ServicioCuenta serviciosbanco;
+    private ServicioCuenta serviciosBanco;
 
     public GuiBanco() {
-        serviciosbanco = new ServicioCuenta();
+        serviciosBanco = new ServicioCuenta();
     }
 
     public void iniciar() throws Exception {
@@ -35,17 +48,23 @@ public class GuiBanco<T> {
         }
 
     }
+    
+    /***
+     * Muestra al cliente el menú y realiza las operaciones indicadas.
+     * @param seleccion
+     * @throws Exception si la opción ingresada en el menú es inválida. 
+     */
 
     private void seleccion(int seleccion) throws Exception {
         switch (seleccion) {
             case 1:
-                crearPersona();
+                crearCuenta();
                 break;
             case 2:
-                listarPersonas();
+                listarCuentas();
                 break;
             case 3:
-                buscarPersona();
+                buscarCuenta();
                 break;
             case 4:
                 realizarDeposito();
@@ -68,13 +87,42 @@ public class GuiBanco<T> {
         }
     }
 
-    private void realizarTranferencia() {
-        // TODO Auto-generated method stub
+    private void realizarTranferencia() throws CuentaInexistente, MaximoRetirosException, SaldoInsuficienteException, MontoInvalidoException {
+        System.out.println("Tranferir Dinero a Cuenta");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("numero de cuenta destino: ");
+        String numeroCuentaDestino = scanner.nextLine();
+        System.out.println("numero de cuenta origen: ");
+        String numeroCuentaOrigen = scanner.nextLine();
+        System.out.println("Cantidad Tranferir ");
+        Double monto = scanner.nextDouble();
+        try {
+            CuentaBancaria cuentaDestino = serviciosBanco.getCuenta(numeroCuentaDestino);
+            CuentaBancaria cuentaOrigen = serviciosBanco.getCuenta(numeroCuentaOrigen);
+            System.out.println("Cuenta origen encontrada");
+            System.out.println(cuentaDestino);
+            System.out.println("Cuenta destino encontrada");
+            System.out.println(cuentaOrigen);
+            
+            if((cuentaDestino== null || cuentaOrigen== null ) ){
+                    throw new CuentaInexistente("Operación Inválida cuentas no encontradas");
 
+            }
+            
+            cuentaOrigen.retirar(monto);
+            cuentaDestino.depositar(monto);
+            
+            serviciosBanco.updateCuenta(cuentaOrigen, numeroCuentaOrigen);
+            serviciosBanco.updateCuenta(cuentaDestino, numeroCuentaDestino);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(GuiBanco.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+      
     }
 
-    private void crearPersona() {
-        System.out.println("Crear banco");
+    private void crearCuenta() {
+        System.out.println("Crear Cuenta");
         Scanner scanner = new Scanner(System.in);
         System.out.println("numerocuenta: ");
         String numerocuenta = scanner.nextLine();
@@ -89,91 +137,90 @@ public class GuiBanco<T> {
         
         if(tipo.equals("1")){
         CuentaBancaria cuenta = new CuentaAhorro(numerocuenta, saldo, propietario);
-        serviciosbanco.saveCuenta(cuenta);
+        serviciosBanco.saveCuenta(cuenta);
         
         }
         else if(tipo.equals("2")){
         CuentaBancaria cuenta = new CuentaCorriente(numerocuenta, saldo, propietario);
-        serviciosbanco.saveCuenta(cuenta);
+        serviciosBanco.saveCuenta(cuenta);
         }
         else{
             System.out.println("Selecciono incorrectamente");
         }
         
-        
-        
-
-
-
     }
 
-    private void listarPersonas() {
+    private void listarCuentas() {
         System.out.println("Listando cuentas");
-        List<CuentaBancaria> cuentas = serviciosbanco.getCuentas();
+        List<CuentaBancaria> cuentas = serviciosBanco.getCuentas();
 
         for (CuentaBancaria cuenta : cuentas) {
-            System.out.println(cuenta.getNumeroCuenta());
-            System.out.println(cuenta.getSaldo());
+            System.out.println(cuenta.toString());
         }
+
     }
 
-    private void buscarPersona() {
+    private void buscarCuenta() {
         System.out.println("Buscar cuenta");
         Scanner scanner = new Scanner(System.in);
         System.out.println("numero de cuenta: ");
         String numerodecuenta = scanner.nextLine();
         try {
-            CuentaBancaria cuentaencontrada = serviciosbanco.getCuenta(numerodecuenta);
+            CuentaBancaria cuentaencontrada = serviciosBanco.getCuenta(numerodecuenta);
             System.out.println("cuenta encontrada: " + cuentaencontrada.getNumeroCuenta());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void realizarDeposito() throws Exception {
+    private void realizarDeposito() throws Exception {
         System.out.println("\n------ Realizar Depósito ------");
         System.out.print("Ingrese el número de cuenta: ");
         Scanner scanner = new Scanner(System.in);
         System.out.println("numero de cuenta: ");
         String numerodecuenta = scanner.nextLine();
-        CuentaBancaria cuenta = serviciosbanco.getCuenta(numerodecuenta);
-        if (cuenta == null) {
-            System.out.println("La cuenta no existe");
-            return;
-        }
-        System.out.print("Ingrese el monto a depositar: ");
-        int monto = scanner.nextInt();
+        System.out.println("Ingrese el monto a depositar: ");
+        double monto = scanner.nextDouble();      
+        CuentaBancaria cuenta = serviciosBanco.getCuenta(numerodecuenta);
         if (monto <= 0) {
             System.out.println("El monto debe ser mayor que cero");
             return;
         }
         cuenta.depositar(monto);
-        System.out.println("\nDepósito realizado exitosamente");
+        
+        if (cuenta == null) {
+            System.out.println("La cuenta no existe");
+            return;
+        }
+
         System.out.println("Nuevo saldo: " + cuenta.getSaldo());
+        serviciosBanco.updateCuenta(cuenta, numerodecuenta);
+        
     }
 
-    public void realizarRetiro() throws Exception {
-        System.out.println("--realizar deposito------: ");
+    private void realizarRetiro() throws Exception {
+        System.out.println("--realizar Retiro------: ");
         System.out.print("Ingrese el número de cuenta: ");
         Scanner scanner = new Scanner(System.in);
         System.out.println("numero de cuenta: ");
         String numerodecuenta = scanner.nextLine();
-        CuentaBancaria cuenta = serviciosbanco.getCuenta(numerodecuenta);
+        CuentaBancaria cuenta = serviciosBanco.getCuenta(numerodecuenta);
 
         if (cuenta == null) {
             System.out.println("La cuenta no existe.");
             return;
         }
         System.out.println("Ingrese la cantidad a retirar: ");
-        int monto = scanner.nextInt();;
+        int monto = scanner.nextInt();
         cuenta.retirar(monto);
         System.out.println("Se ha retirado $" + monto + " de la cuenta " + numerodecuenta);
         System.out.println("El saldo actual de la cuenta es $" + cuenta.getSaldo());
+        serviciosBanco.updateCuenta(cuenta, numerodecuenta);
 
     }
 
     private void salir() {
-        System.out.println("Salir");
+        System.out.println("Gracias por usar la aplicacion");
         this.running = false;
     }
 }

@@ -42,7 +42,7 @@ public class CuentaAhorro extends CuentaBancaria {
             throw new SaldoInsuficienteException("Saldo insuficiente para realizar la transacción ");
         }
        
-        super.depositar(monto);
+        super.realizarRetiro(monto);
     }
     
     /***

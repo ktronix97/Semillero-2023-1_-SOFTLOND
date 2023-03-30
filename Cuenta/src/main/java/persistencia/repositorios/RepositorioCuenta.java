@@ -28,7 +28,7 @@ public class RepositorioCuenta implements IRepositorio<CuentaBancaria> {
     protected String baseDatos;
 
     /**
-     *
+     * Se crea un repositorio que se conecta a la base de datos
      */
     public RepositorioCuenta() {
         try {
@@ -62,7 +62,8 @@ public class RepositorioCuenta implements IRepositorio<CuentaBancaria> {
      *
      * @param connection
      */
-    protected void desconectar(Connection connection) {
+    @Override
+    public void desconectar(Connection connection) {
         try {
             if (connection != null) {
                 connection.close();
@@ -73,7 +74,7 @@ public class RepositorioCuenta implements IRepositorio<CuentaBancaria> {
     }
 
     /**
-     * Ejecuta una consulta dada
+     * Ejecuta una consulta dada.
      *
      * @param query
      */
@@ -97,7 +98,7 @@ public class RepositorioCuenta implements IRepositorio<CuentaBancaria> {
      * @param id
      */
     @Override
-    public void delete(int id) {
+    public void eliminar(int id) throws CuentaInexistente {
         int response = 0;
         Connection connection = null;
         String sql = "DELETE FROM cuentas WHERE id =" + id;
@@ -129,34 +130,38 @@ public class RepositorioCuenta implements IRepositorio<CuentaBancaria> {
     }
 
     /**
+     * Selecciona un usuario dado un Id especifico
      *
      * @param id
      * @return
      * @throws SQLException
      * @throws CuentaInexistente
      */
-    public CuentaBancaria selectById(int id) throws SQLException, CuentaInexistente {
+    @Override
+    public CuentaBancaria selectById(String id) throws SQLException, CuentaInexistente {
+
         CuentaAhorro cuenta = null;
         Connection connection = null;
-        String sql = "SELECT * FROM cuentas WHERE id = ?";
+        String sql = "SELECT * FROM cuentas WHERE idCuenta = ?";
         try {
-            connection = DriverManager.getConnection(super.toString());
+            connection = DriverManager.getConnection(this.baseDatos);
             PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setDouble(1, id);
+            pstmt.setString(1, id);
 
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 cuenta = new CuentaAhorro(
-                        rs.getString("numero"),
+                        rs.getString("idCuenta"),
                         rs.getInt("saldo"),
                         rs.getString("propietario")
                 );
-                cuenta.setNumRetiros(rs.getInt("retiros"));
+                cuenta.setNumRetiros(rs.getInt("numRetiros"));
+                cuenta.setNumDepositos(rs.getInt("numDepositos"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
-            connection.close();
+            this.desconectar(connection);
         }
         if (cuenta == null) {
             throw new CuentaInexistente("La cuenta no existe");
@@ -165,12 +170,8 @@ public class RepositorioCuenta implements IRepositorio<CuentaBancaria> {
         }
     }
 
-    @Override
-    public void desconectar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
+     * Devuelve en una lista todos los datos de cuentas
      *
      * @return
      */
@@ -185,34 +186,41 @@ public class RepositorioCuenta implements IRepositorio<CuentaBancaria> {
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                CuentaAhorro cuenta = new CuentaAhorro(
-                        rs.getString("numero"),
-                        rs.getInt("saldo"),
-                        rs.getNString("propíetario")
-                );
-                cuenta.setNumRetiros(rs.getInt("retiros"));
-                cuentas.add(cuenta);
+                if (rs.getString("tipoCuenta").equalsIgnoreCase("Ahorro")) {
+
+                    CuentaBancaria cuenta = new CuentaAhorro(
+                            rs.getString("idcuenta"),
+                            rs.getDouble("saldo"),
+                            rs.getString("propietario")
+                    );
+                    cuenta.setNumRetiros(rs.getInt("numRetiros"));
+                    cuentas.add(cuenta);
+                } else if (rs.getString("tipoCuenta").equalsIgnoreCase("Corriente")) {
+
+                    CuentaBancaria cuenta = new CuentaCorriente(
+                            rs.getString("idcuenta"),
+                            rs.getDouble("saldo"),
+                            rs.getString("propietario")
+                    );
+                    cuenta.setNumRetiros(rs.getInt("numRetiros"));
+                    cuentas.add(cuenta);
+                }
+
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
             this.desconectar(connection);
         }
-        System.out.println(cuentas);
         return cuentas;
 
     }
 
-    @Override
-    public CuentaBancaria selectById(String numerodecuenta) throws CuentaInexistente {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void update(CuentaBancaria entity, int id) throws CuentaInexistente {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    /**
+     * Inserta una cuenta dada en la base de datos
+     *
+     * @param cuenta
+     */
     @Override
     public void insertar(CuentaBancaria cuenta) {
         Connection connection = null;
@@ -231,9 +239,34 @@ public class RepositorioCuenta implements IRepositorio<CuentaBancaria> {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
-            System.out.println("Se ha creado exitosamente el ");
+            System.out.println("Se ha creado exitosamente el usuario");
             this.desconectar(connection);
         }
+    }
+
+    @Override
+    public void actualizar(CuentaBancaria cuenta, String id) throws CuentaInexistente {
+        System.out.println("Dato");
+        System.out.println(id);
+
+        Connection connection = null;
+        String sql = "UPDATE cuentas SET saldo=?, propietario=?, numretiros=? ,numdepositos=?   WHERE idCuenta=" + id;
+        try {
+            connection = DriverManager.getConnection(this.baseDatos);
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+
+            pstmt.setDouble(1, cuenta.getSaldo());
+            pstmt.setString(2, cuenta.getPropietario());
+            pstmt.setInt(3, cuenta.getNumRetiros());
+            pstmt.setInt(4, cuenta.getNumDepositos());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            this.desconectar(connection);
+        }
+
     }
 
 }
