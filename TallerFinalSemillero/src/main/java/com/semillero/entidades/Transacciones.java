@@ -5,11 +5,11 @@ public class Transacciones {
     protected String fecha;
     protected String hora;
     protected String tipo_transaccion;
-    protected int monto;
+    protected double monto;
     protected int id_cuenta;
     protected String tipo_cuenta_destino;
  
-    public Transacciones(int id, String fecha, String hora, String tipo_transaccion, int monto, int id_cuenta,
+    public Transacciones(int id, String fecha, String hora, String tipo_transaccion, double monto, int id_cuenta,
             String tipo_cuenta_destino) {
         this.id = id;
         this.fecha = fecha;
@@ -20,7 +20,8 @@ public class Transacciones {
         this.tipo_cuenta_destino = tipo_cuenta_destino;
     }
     
-    public int getId() {
+
+	public int getId() {
         return id;
     }
     public void setId(int id) {
@@ -44,10 +45,10 @@ public class Transacciones {
     public void setTipoTransaccion(String tipo_transaccion) {
         this.tipo_transaccion = tipo_transaccion;
     }
-    public int getMonto() {
+    public double getMonto() {
         return monto;
     }
-    public void setMonto(int monto) {
+    public void setMonto(double monto) {
         this.monto = monto;
     }
     public int getId_cuenta() {

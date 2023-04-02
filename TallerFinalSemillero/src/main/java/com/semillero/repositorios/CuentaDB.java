@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import com.semillero.entidades.Cuentas;
+import com.semillero.entidades.Cuenta;
 
 public class CuentaDB implements Repositorio {
     private String cadenaConexion;
@@ -47,7 +47,7 @@ public class CuentaDB implements Repositorio {
     @Override
     public void guardar(Object objeto) {
         try (Connection conexion = DriverManager.getConnection(cadenaConexion)) {
-            Cuentas cuentas = (Cuentas) objeto;
+            Cuenta cuentas = (Cuenta) objeto;
             String sentenciaSql = "INSERT INTO CUENTAS (NUMERO_CUENTA, SALDO , TIPO_CUENTA,ID_USUARIO) " +
             " VALUES('" + cuentas.getNumeroCuenta() + "', " + cuentas.getSaldo()
                      + ",'" + cuentas.getTipo()
@@ -79,7 +79,7 @@ public class CuentaDB implements Repositorio {
     @Override
     public void actualizar(Object objeto) {
         try (Connection conexion = DriverManager.getConnection(cadenaConexion)) {
-            Cuentas cuentas = (Cuentas) objeto;
+            Cuenta cuentas = (Cuenta) objeto;
             String sentenciaSql = "UPDATE Cuentas SET NUMERO_CUENTA, = '" + cuentas.getNumeroCuenta() + "', SALDO REAL = '"
                     + cuentas.getSaldo() + "', TIPO_CUENTA = " + cuentas.getTipo() + ", ID_USUARIO = '"
                     + cuentas.getId_usuario() + "' WHERE NUMERO_CUENTA = '" + cuentas.getNumeroCuenta() + "';";
@@ -100,14 +100,14 @@ public class CuentaDB implements Repositorio {
             sentencia.setString(1, NUMERO_CUENTA);
             ResultSet resultadoConsulta = sentencia.executeQuery();
             if (resultadoConsulta != null && resultadoConsulta.next()) {
-                Cuentas cuentas = null;
+                Cuenta cuentas = null;
                 int id = resultadoConsulta.getInt("id");
                 String numeroCuenta = resultadoConsulta.getString("NUMERO_CUENTA");
                 Integer saldo = resultadoConsulta.getInt("SALDO_REAL");
                 String tipoCuenta = resultadoConsulta.getString("TIPO_CUENTA");
                 Integer idCuenta = resultadoConsulta.getInt("ID_USUARIO");
                 
-                cuentas = new Cuentas(id, numeroCuenta, saldo, idCuenta, tipoCuenta);
+                cuentas = new Cuenta(id, numeroCuenta, saldo, idCuenta, tipoCuenta);
                 
                 return cuentas;
             }
@@ -120,7 +120,7 @@ public class CuentaDB implements Repositorio {
 
     @Override
     public List<?> listar() {
-        List<Cuentas> cuentas = new ArrayList<Cuentas>();
+        List<Cuenta> cuentas = new ArrayList<Cuenta>();
 
         try (Connection conexion = DriverManager.getConnection(cadenaConexion)) {
             String sentenciaSql = "SELECT * FROM CUENTAS";
@@ -129,14 +129,14 @@ public class CuentaDB implements Repositorio {
 
             if (resultadoConsulta != null) {
                 while (resultadoConsulta.next()) {
-                    Cuentas cuenta = null;
+                    Cuenta cuenta = null;
                     int id = resultadoConsulta.getInt("id");
                     String numeroCuenta = resultadoConsulta.getString("NUMERO_CUENTA");
                 Integer saldo = resultadoConsulta.getInt("SALDO");
                 String tipoCuenta = resultadoConsulta.getString("TIPO_CUENTA");
                 Integer idUsuario = resultadoConsulta.getInt("ID_USUARIO");
 
-                    cuenta = new Cuentas( id, numeroCuenta, saldo, idUsuario, tipoCuenta);
+                    cuenta = new Cuenta( id, numeroCuenta, saldo, idUsuario, tipoCuenta);
                     cuentas.add(cuenta);
                 }
               return cuentas;
@@ -152,7 +152,7 @@ public class CuentaDB implements Repositorio {
     @Override
     public void actualizarId(Object objeto, String id) {
         try (Connection conexion = DriverManager.getConnection(cadenaConexion)) {
-            Cuentas cuentas = (Cuentas) objeto;
+            Cuenta cuentas = (Cuenta) objeto;
             String sentenciaSql = "UPDATE Cuentas SET NUMERO_CUENTA = '" + cuentas.getNumeroCuenta() + "', SALDO REAL = "
                     + cuentas.getSaldo() + ", TIPO_CUENTA = '" + cuentas.getTipo()  + "' WHERE id = " + id
                     + ";";

@@ -5,6 +5,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import com.semillero.controlador.CuentaController;
+import com.semillero.controlador.TransaccionController;
 import com.semillero.controlador.UsuarioController;
 
 
@@ -18,7 +19,7 @@ public class App
         ServletContextHandler context = new ServletContextHandler();
 
         context.setContextPath("/");
-        //context.addServlet(HolaMundo.class, "/hola/*");
+        context.addServlet(TransaccionController.class, "/transacciones/*");
         context.addServlet(UsuarioController.class, "/usuario/*");
         context.addServlet(CuentaController.class, "/cuenta/*");
 

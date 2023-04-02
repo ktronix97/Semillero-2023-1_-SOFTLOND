@@ -3,7 +3,7 @@ package com.semillero.servicios;
 import java.util.List;
 import java.util.Map;
 
-import com.semillero.entidades.Cuentas;
+import com.semillero.entidades.Cuenta;
 import com.semillero.entidades.Usuario;
 import com.semillero.repositorios.CuentaDB;
 import com.semillero.repositorios.Repositorio;
@@ -22,21 +22,21 @@ public class CuentaServicio {
         double saldo = (double) datos.get("saldo");
         Integer id_usuario = (Integer) datos.get("id_usuario");
         String tipo = (String) datos.get("tipo_cuenta");
-        Cuentas newPerson = new Cuentas(0, numeroCuenta, saldo, id_usuario, tipo);
+        Cuenta newPerson = new Cuenta(0, numeroCuenta, saldo, id_usuario, tipo);
         CuentaRepositorio.guardar(newPerson);
     }
 
-    public static List<Cuentas> listarCuenta() {
+    public static List<Cuenta> listarCuenta() {
         
-        return (List<Cuentas>) CuentaRepositorio.listar();
+        return (List<Cuenta>) CuentaRepositorio.listar();
     }
 
-    public Cuentas buscarcCuentas(String numeroCuenta) throws Exception {
+    public Cuenta buscarcCuentas(String numeroCuenta) throws Exception {
         Object Cuenta = CuentaRepositorio.buscar(numeroCuenta);
         if (Cuenta == null) {
             throw new Exception("No se encontro la Cuenta");
         }
-        return (Cuentas) Cuenta;
+        return (Cuenta) Cuenta;
     }
 
     public void eliminarCuenta(String identificador) {
@@ -52,7 +52,7 @@ public class CuentaServicio {
         String tipo = (String) datos.get("tipo");
 
 
-        Cuentas newPerson = new Cuentas( idCuenta, numeroCuenta, saldo, id_usuario, tipo);
+        Cuenta newPerson = new Cuenta( idCuenta, numeroCuenta, saldo, id_usuario, tipo);
         CuentaRepositorio.actualizar(newPerson);
     }
 
@@ -63,7 +63,7 @@ public class CuentaServicio {
         Integer id_usuario = (Integer) datos.get("id_usuario");
         String tipo = (String) datos.get("tipo");
 
-        Cuentas newPerson = new Cuentas( idCuenta, numeroCuenta, saldo, id_usuario, tipo);
+        Cuenta newPerson = new Cuenta( idCuenta, numeroCuenta, saldo, id_usuario, tipo);
         CuentaRepositorio.actualizarId(newPerson, id);
     }
 }

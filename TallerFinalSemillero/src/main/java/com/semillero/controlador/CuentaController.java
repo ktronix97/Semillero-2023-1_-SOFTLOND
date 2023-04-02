@@ -3,17 +3,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.semillero.entidades.Cuentas;
-import com.semillero.entidades.Usuario;
+import com.semillero.entidades.Cuenta;
 import com.semillero.servicios.CuentaServicio;
-import com.semillero.servicios.UsuarioServicio;
+
+
 public class CuentaController extends HttpServlet{
     private CuentaServicio cuentaServicio;
     private ObjectMapper mapper;
@@ -31,7 +29,7 @@ public class CuentaController extends HttpServlet{
 
             switch (path) {	
             	case"/listar":
-                List<Cuentas> cuenta = CuentaServicio.listarCuenta();
+                List<Cuenta> cuenta = CuentaServicio.listarCuenta();
                 String json = mapper.writeValueAsString(cuenta);
                 response.setContentType("application/json");
                 response.getWriter().println(json);
@@ -39,7 +37,7 @@ public class CuentaController extends HttpServlet{
                 case "/buscar":
                     String identificador = request.getParameter("identificador");
                     try {
-                        Cuentas cuenta1 = cuentaServicio.buscarcCuentas(identificador);
+                        Cuenta cuenta1 = cuentaServicio.buscarcCuentas(identificador);
                         String json1 = mapper.writeValueAsString(cuenta1);
                         response.setContentType("application/json");
                         response.getWriter().println(json1);

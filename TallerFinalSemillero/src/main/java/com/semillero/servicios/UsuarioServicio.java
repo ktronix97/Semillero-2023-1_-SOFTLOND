@@ -3,7 +3,7 @@ package com.semillero.servicios;
 import java.util.List;
 import java.util.Map;
 
-import com.semillero.entidades.Cuentas;
+import com.semillero.entidades.Cuenta;
 import com.semillero.entidades.Usuario;
 import com.semillero.repositorios.CuentaDB;
 import com.semillero.repositorios.Repositorio;

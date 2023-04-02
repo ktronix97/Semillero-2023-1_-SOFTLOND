@@ -1,13 +1,13 @@
 package com.semillero.entidades;
 
-public   class Cuentas {
+public   class Cuenta {
     protected int idCuenta;
 	protected String numeroCuenta;
 	protected  double saldo;
 	protected  Integer idUsuario;
 	protected String tipo;
 
-    public Cuentas( int idCuenta, String numeroCuenta, double saldo, Integer idUsuario, String tipo) {
+    public Cuenta( int idCuenta, String numeroCuenta, double saldo, Integer idUsuario, String tipo) {
         this.idCuenta = idCuenta;
         this.numeroCuenta = numeroCuenta;
         this.saldo = saldo;
